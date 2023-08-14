@@ -1,0 +1,7 @@
+<ng-container>
+  <ion-buttons>
+        <ion-button fill="solid" *ngFor="let menuItem of contextMenuItems; index as i" (click)="onContextMenuClick($event, menuItem.menuIcon)" [title]="menuItem.menuText">
+          <ion-icon slot="icon-only" [name]="menuItem.menuIcon"></ion-icon>
+        </ion-button>
+  </ion-buttons>
+</ng-container>
