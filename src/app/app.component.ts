@@ -1,6 +1,6 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { ContextMenuModel } from './interfaces/context-menu-model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, debounceTime, fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -67,6 +67,14 @@ export class AppComponent {
             newElement.style.border = '1px solid black';
             newElement.setAttribute('draggable', 'true')
             newElement.setAttribute('contenteditable', 'true')
+            fromEvent(newElement, 'DOMCharacterDataModified').pipe(
+              debounceTime(2000) // 2 seconds
+            ).subscribe((ev) => {
+              //find all html tags and contents
+              let htmlTags = (ev.target as Element)?.textContent?.match(/<(\/?\w+)(?:\s+[^>]*|)>([^<]*)<\/\1>/g);
+              console.log(htmlTags);
+              newElement.appendChild(new DOMParser().parseFromString(htmlTags?.[0] as string, 'text/html'));
+            });
             newElement.addEventListener("dragstart", (ev: DragEvent) => {
               // Change the source element's background color
               // to show that drag has started
